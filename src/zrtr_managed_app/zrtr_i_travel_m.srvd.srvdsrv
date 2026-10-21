@@ -1,0 +1,6 @@
+@EndUserText.label: 'RTR: Travel Interface View - Testing'
+define service ZRTR_I_TRAVEL_M {
+  expose ZRTR_I_TRAVEL_M;
+  expose ZRTR_I_BOOKING_M;
+  expose ZRTR_I_BOOKSUPPL_M;
+}

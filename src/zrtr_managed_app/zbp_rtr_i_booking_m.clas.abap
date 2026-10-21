@@ -1,0 +1,5 @@
+CLASS zbp_rtr_i_booking_m DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zrtr_i_travel_m.
+ENDCLASS.
+
+CLASS zbp_rtr_i_booking_m IMPLEMENTATION.
+ENDCLASS.

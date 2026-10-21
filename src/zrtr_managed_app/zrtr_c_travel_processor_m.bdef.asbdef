@@ -1,0 +1,36 @@
+projection;
+strict ( 2 );
+
+define behavior for ZRTR_C_TRAVEL_PROCESSOR_M alias Travel
+use etag
+{
+
+  field ( readonly ) TotalPrice;
+  use create;
+  use update;
+  use delete;
+
+  use association _Booking { create; }
+
+  use action copyTravel;
+}
+
+define behavior for ZRTR_C_BOOKING_PROCESSOR_M alias Booking
+use etag
+{
+  use update;
+//  use delete;
+
+  use association _Travel;
+  use association _BookSupplement { create; }
+}
+
+define behavior for ZRTR_C_BOOKSUPPL_PROCESSOR_M alias BookingSupplement
+use etag
+{
+  use update;
+//  use delete;
+
+  use association _Travel;
+  use association _Booking;
+}

@@ -1,0 +1,59 @@
+@Metadata.layer: #CORE
+
+@UI: {
+  headerInfo: { typeName: 'Travel', typeNamePlural: 'Travels', title: { type: #STANDARD, value: 'TravelId' } } , presentationVariant: [{ sortOrder: [{ by: 'TravelId' , direction: #DESC }] }] }
+annotate entity ZRTR_C_TRAVEL_PROCESSOR_M with
+{
+  @UI.facet: [ { id:              'Travel',
+                    purpose:         #STANDARD,
+                    type:            #IDENTIFICATION_REFERENCE,
+                    label:           'Travel',
+                    position:        10 },
+                  { id:              'Booking',
+                    purpose:         #STANDARD,
+                    type:            #LINEITEM_REFERENCE,
+                    label:           'Booking',
+                    position:        20,
+                    targetElement:   '_Booking'}]
+  @UI: {
+      lineItem:       [ { position: 10, importance: #HIGH } ,
+                      { type: #FOR_ACTION, dataAction: 'copyTravel', label: 'Copy Travel' } ],
+      identification: [ { position: 10, label: 'Travel ID' } ] }
+  TravelId;
+  @UI: {
+      lineItem:       [ { position: 20, importance: #HIGH } ],
+      identification: [ { position: 20 } ],
+      selectionField: [ { position: 20 } ] }
+  AgencyId;
+  @UI: {
+           lineItem:       [ { position: 30, importance: #HIGH } ],
+           identification: [ { position: 30 } ],
+           selectionField: [ { position: 30 } ] }
+  CustomerId;
+  @UI: {
+      lineItem:       [ { position: 40, importance: #MEDIUM } ],
+      identification: [ { position: 40 } ] }
+  BeginDate;
+  @UI: {
+      lineItem:       [ { position: 41, importance: #MEDIUM } ],
+      identification: [ { position: 50 } ] }
+  EndDate;
+  @UI: {
+      identification: [ { position: 60 } ] }
+  BookingFee;
+  @UI: {
+      lineItem:       [ { position: 43, importance: #MEDIUM } ],
+      identification: [ { position: 70, label: 'Total Price' } ] }
+  TotalPrice;
+  //  CurrencyCode;
+  @UI: {
+       lineItem:       [ { position: 50, importance: #HIGH } ],
+       identification: [ { position: 80, label: 'Status' } ],
+       selectionField: [{ position: 40 }],
+       textArrangement: #TEXT_ONLY
+        }
+  OverallStatus;
+  @UI: {
+         identification:[ { position: 90 } ]  }
+  Description;
+}

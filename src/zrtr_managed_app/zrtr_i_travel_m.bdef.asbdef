@@ -1,0 +1,147 @@
+managed implementation in class zbp_rtr_i_travel_m unique;
+strict ( 2 );
+
+define behavior for ZRTR_I_TRAVEL_M alias Travel
+implementation in class zbp_rtr_i_travel_m unique
+persistent table /dmo/travel_m
+with additional save
+lock master
+authorization master ( global )
+etag master LastChangedAt
+early numbering
+{
+  create ( authorization : global );
+  update;
+  delete;
+
+  // Administrative field read-only
+  field ( readonly ) LastChangedAt, LastChangedBy, CreatedAt, CreatedBy;
+  // mandatory fields that are required to create a travel
+  field ( mandatory ) AgencyId, CustomerId, BeginDate, EndDate, OverallStatus, BookingFee, CurrencyCode;
+  // Semantic Key field, which is readonly for the consumer, value is assigned in early numbering
+  field ( readonly ) TravelId;
+
+  // dynamic operation control
+  association _Booking { create ( features : instance ); }
+
+  // dynamic action control
+
+  action ( features : instance ) acceptTravel result [1] $self;
+  action ( features : instance ) rejectTravel result [1] $self;
+
+  factory action copyTravel [1];
+
+  internal action reCalTotalPrice;
+
+  validation validateCustomer on save { create; field CustomerId; }
+  validation validateAgency on save { create; field AgencyId; }
+  validation validateDates on save { create; field BeginDate, EndDate; }
+  validation validateStatus on save { create; field OverallStatus; }
+  validation validateCurrencyCode on save { create; field CurrencyCode; }
+  validation validateBookingFee on save { create; field BookingFee; }
+
+  determination calculateTotalPrice on modify { create; field BookingFee,CurrencyCode; }
+
+
+  mapping for /dmo/travel_m
+    {
+      TravelId      = travel_id;
+      AgencyId      = agency_id;
+      CustomerId    = customer_id;
+      BeginDate     = begin_date;
+      EndDate       = end_date;
+      BookingFee    = booking_fee;
+      TotalPrice    = total_price;
+      CurrencyCode  = currency_code;
+      Description   = description;
+      OverallStatus = overall_status;
+      Createdby     = created_by;
+      Createdat     = created_at;
+      Lastchangedby = last_changed_by;
+      Lastchangedat = last_changed_at;
+    }
+}
+
+define behavior for ZRTR_I_BOOKING_M alias Booking
+implementation in class zbp_rtr_i_booking_m unique
+persistent table /dmo/booking_m
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master LastChangedAt
+early numbering
+{
+  update;
+  delete;
+
+  // administrative fields: read only
+  field ( readonly ) LastChangedAt;
+  // static field control
+  field ( mandatory ) CarrierId, ConnectionId, flightdate, bookingstatus;
+  field ( readonly ) TravelId, BookingId;
+  // Fields that are mandatory for create but should be read-only afterwards
+  field ( mandatory : create, readonly : update ) BookingDate, CustomerId;
+  association _Travel;
+  association _BookSupplement { create ( features : instance ); }
+
+  validation validateStatus on save { create; field BookingStatus; }
+  validation validateCustomer on save { create; field CustomerId; }
+  validation validateCurrencyCode on save { create; field CurrencyCode; }
+  validation validateConnection on save { create; field CarrierId, ConnectionId, FlightDate; }
+  validation validateFlightPrice on save { create; field FlightPrice; }
+
+  determination calculateTotalPrice on modify { create; field FlightPrice,CurrencyCode; }
+
+  mapping for /dmo/booking_m
+    {
+      TravelId      = travel_id;
+      BookingId     = booking_id;
+      BookingDate   = booking_date;
+      CustomerId    = customer_id;
+      CarrierId     = carrier_id;
+      ConnectionId  = connection_id;
+      FlightDate    = flight_date;
+      FlightPrice   = flight_price;
+      CurrencyCode  = currency_code;
+      BookingStatus = booking_status;
+      LastChangedAt = last_changed_at;
+    }
+
+
+}
+
+define behavior for ZRTR_I_BOOKSUPPL_M alias BookingSupplement
+implementation in class zbp_rtr_i_booksuppl_m unique
+persistent table /dmo/booksuppl_m
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master LastChangedAt
+early numbering
+{
+  update;
+  delete;
+  // administrative fields: read only
+  field ( readonly ) LastChangedAt;
+  // static field control
+  field ( mandatory ) price, supplementid;
+  field ( readonly ) travelid, bookingid, bookingsupplementid;
+  association _Travel;
+  association _Booking;
+
+  validation validateCurrencyCode on save { create; field currencycode; }
+  validation validateSupplement on save { create; field supplementid; }
+  validation validatePrice on save { create; field price; }
+
+  determination calculateTotalPrice on modify { create; field Price,CurrencyCode; }
+
+  mapping for /dmo/booksuppl_m
+    {
+      TravelId            = travel_id;
+      BookingId           = booking_id;
+      BookingSupplementId = booking_supplement_id;
+      SupplementId        = supplement_id;
+      Price               = price;
+      CurrencyCode        = currency_code;
+      LastChangedAt       = last_changed_at;
+    }
+
+}

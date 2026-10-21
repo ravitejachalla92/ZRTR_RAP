@@ -1,0 +1,12 @@
+@EndUserText.label: 'RTR:Travel Approver Service'
+@ObjectModel.leadingEntity.name: 'ZRTR_C_Travel_Approver_M'
+define service ZRTR_C_TRAVEL_APPROVER_M {
+  expose ZRTR_C_TRAVEL_APPROVER_M  as Travel;
+  expose ZRTR_C_BOOKING_APPROVER_M as Booking;
+  expose /DMO/I_Customer_StdVH     as Passenger;
+  expose /DMO/I_Agency_StdVH       as TravelAgency;
+  expose I_CurrencyStdVH           as Currency;
+  expose I_CountryVH               as Country;
+  expose /DMO/I_Overall_Status_VH  as OverallStatus;
+  expose /DMO/I_Booking_Status_VH  as BookingStatus;
+}
